@@ -6,14 +6,8 @@ import { createNotification, removeMessage } from '../reducers/notificationReduc
 
 const AnecdoteList = ( props ) => {
 
-    const anecdotesToShow = () => {
-      if (props.filter === 'ALL') {
-        return props.anecdotes
-      }
-      return props.anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(props.filter.toLowerCase()))
-    }
     const voteAnecdote = (id) =>  {
-        const anecdote = props.anecdotes.find(anecdote => anecdote.id === id)
+        const anecdote = props.visibleAnecdotes.find(anecdote => anecdote.id === id)
         props.vote(id)
         props.createNotification("you voted '" + anecdote.content + "'")
         setTimeout(() => {
@@ -24,7 +18,7 @@ const AnecdoteList = ( props ) => {
     return (
         <div>
           <Filter />
-          { anecdotesToShow().sort((a, b) => b.votes - a.votes).map(anecdote =>
+          { props.visibleAnecdotes.sort((a, b) => b.votes - a.votes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
@@ -39,11 +33,17 @@ const AnecdoteList = ( props ) => {
     )
 
 }
+
+const anecdotesToShow = ({ anecdotes, filter }) => {
+  if (filter === 'ALL') {
+    return anecdotes
+  }
+  return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
+}
+
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter
+    visibleAnecdotes: anecdotesToShow(state),
   }
 }
 
