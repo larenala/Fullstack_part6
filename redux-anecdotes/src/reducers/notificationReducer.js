@@ -20,7 +20,6 @@ export const removeMessage = () => {
 }
 
 const notificationReducer = (state = notificationAtStart, action) => {
-    console.log('state at Notificationreducer ', state)
     switch (action.type) {
         case 'CREATE':
           const newState = action.data.notification

@@ -1,32 +1,29 @@
 import React from 'react'
 import { vote } from '../reducers/anecdoteReducer'
+import { connect } from 'react-redux'
+import Filter from './Filter'
 import { createNotification, removeMessage } from '../reducers/notificationReducer'
 
-const AnecdoteList = ({ store }) => {
-    const { anecdotes, filter } = store.getState()
+const AnecdoteList = ( props ) => {
+
     const anecdotesToShow = () => {
-      if (filter === 'ALL') {
-        return anecdotes
+      if (props.filter === 'ALL') {
+        return props.anecdotes
       }
-      return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
+      return props.anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(props.filter.toLowerCase()))
     }
     const voteAnecdote = (id) =>  {
-        const anecdote = store.getState().anecdotes.find(anecdote => anecdote.id === id)
-        store.dispatch(
-          vote(id)
-        )
-        store.dispatch(
-            createNotification("you voted '" + anecdote.content + "'")
-        )
+        const anecdote = props.anecdotes.find(anecdote => anecdote.id === id)
+        props.vote(id)
+        props.createNotification("you voted '" + anecdote.content + "'")
         setTimeout(() => {
-            store.dispatch(
-                removeMessage()
-            )          
+            props.removeMessage() 
         }, 5000)
       }
   
     return (
         <div>
+          <Filter />
           { anecdotesToShow().sort((a, b) => b.votes - a.votes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
@@ -42,5 +39,21 @@ const AnecdoteList = ({ store }) => {
     )
 
 }
+const mapStateToProps = (state) => {
+  console.log(state)
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
 
-export default AnecdoteList
+const mapDispatchToProps = {
+  vote,
+  createNotification,
+  removeMessage,
+}
+const ConnectedAnecdoteList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+  )(AnecdoteList)
+export default ConnectedAnecdoteList
