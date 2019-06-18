@@ -5,7 +5,6 @@ import { filterChange } from '../reducers/filterReducer'
 const Filter = (props) => {
   const handleChange = (event) => {
     props.filterChange(event.target.value)
-    // input-kentän arvo muuttujassa event.target.value
   }
   const style = {
     marginBottom: 10
@@ -18,5 +17,4 @@ const Filter = (props) => {
   )
 }
 
-const ConnectedFilter = connect(null, { filterChange })(Filter)
-export default ConnectedFilter
+export default connect(null, { filterChange })(Filter)

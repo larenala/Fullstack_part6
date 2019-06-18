@@ -10,11 +10,13 @@ const getAll = async () => {
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const createNew = async (content) => {
-    return {
+    const newItem = {
         content: content,
         id: getId(),
         votes: 0
-      }
+    }
+    const response = await axios.post(baseUrl, newItem)
+    return response.data
 } 
 
 export default { getAll, createNew }
